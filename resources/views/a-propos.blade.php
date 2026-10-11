@@ -1,21 +1,17 @@
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>À propos - Mini-CMS</title>
-</head>
-<body>
-    <h1>À propos de Mini-CMS</h1>
+<x-layout>
+    <x-slot:title>À propos - Mini-CMS</x-slot:title>
 
-    <p>Projet de l'Atelier Framework Côté Serveur.</p>
+    <h1 class="text-3xl font-bold">À propos de Mini-CMS</h1>
 
-    <p>Auteur : {{ $auteur }}</p>
-    <p>Groupe : {{ $groupe }}</p>
-
-    <p>
-        <a href="{{ route('home') }}">Accueil</a> |
-        <a href="/heure">Heure</a>
+    <p class="mt-4 text-gray-700">
+        Mini-CMS est le projet fil rouge de l'Atelier Framework Côté Serveur (Laravel 13).
     </p>
-</body>
-</html>
+
+    <p class="mt-2 text-gray-700">Auteur : {{ $auteur }}</p>
+    <p class="mt-2 text-gray-700">Groupe : {{ $groupe }}</p>
+
+    <p class="mt-6">
+        <a href="/heure" class="text-red-600 underline">Heure du serveur</a>
+    </p>
+</x-layout>
