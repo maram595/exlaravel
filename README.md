@@ -13,6 +13,8 @@ Mini-CMS est une application web développée avec Laravel. Ce projet permet de 
 - Composer
 - Node.js et npm
 - Blade
+- Tailwind CSS
+- Vite
 - Git et GitHub
 
 ## Prérequis
@@ -48,21 +50,47 @@ npm install
 
 ## Lancer le projet
 
+Pour démarrer l'application et les outils de développement :
+
 ```bash
 composer run dev
 ```
 
-Ouvrir ensuite l’application à l’adresse : http://localhost:8000
+Ouvrir ensuite l'application à l'adresse suivante :
+
+http://localhost:8000
+
+## État actuel (tag lab-02)
+
+- Routes nommées, toutes servies par des contrôleurs : `PageController` pour les pages et `PostController` pour les articles.
+- Articles stockés dans un tableau PHP, sans base de données pour l'instant.
+- Layout Blade `<x-layout>` avec Tailwind CSS chargé par Vite.
+- Base de données SQLite locale dans `database/database.sqlite`, non versionnée.
 
 ## Routes disponibles
 
-- `/` : page d’accueil
-- `/bonjour` : page Bonjour
-- `/bonjour-court` : message court
-- `/bienvenue` : page de bienvenue
-- `/version` : informations sur la version
-- `/heure` : heure et date actuelles
-- `/a-propos` : présentation du projet et de son auteur
+| Méthode | URI | Nom | Action |
+|---|---|---|---|
+| GET | `/` | `home` | `PageController@home` |
+| GET | `/a-propos` | `about` | `PageController@about` |
+| GET | `/heure` | `time` | `PageController@time` |
+| GET | `/posts` | `posts.index` | `PostController@index` |
+| GET | `/posts/archive/{year}` | `posts.archive` | `PostController@archive` |
+| GET | `/posts/{slug}` | `posts.show` | `PostController@show` |
+
+## Captures d'écran
+
+### Accueil avec le layout
+
+![Page d'accueil avec le layout](screenshots/s03-accueil.png)
+
+### Liste des articles
+
+![Liste des articles](screenshots/s03-articles.png)
+
+### Détail d'un article
+
+![Détail d'un article](screenshots/s03-article.png)
 
 ## Auteur
 
