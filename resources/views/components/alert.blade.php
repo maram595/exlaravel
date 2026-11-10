@@ -14,7 +14,6 @@
 
 <div role="{{ $type === 'error' ? 'alert' : 'status' }}"
     {{ $attributes->merge(['class' => 'border-l-4 p-4 rounded '.$classes]) }}>
-
     @if ($title)
         <p class="font-semibold">{{ $title }}</p>
     @endif
