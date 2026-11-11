@@ -60,12 +60,13 @@ Ouvrir ensuite l'application à l'adresse suivante :
 
 http://localhost:8000
 
-## État actuel (tag lab-02)
 
-- Routes nommées, toutes servies par des contrôleurs : `PageController` pour les pages et `PostController` pour les articles.
-- Articles stockés dans un tableau PHP, sans base de données pour l'instant.
-- Layout Blade `<x-layout>` avec Tailwind CSS chargé par Vite.
-- Base de données SQLite locale dans `database/database.sqlite`, non versionnée.
+## État actuel (tag lab-02b)
+
+- Pages construites avec des composants Blade anonymes : `x-navbar`, `x-nav-link`, `x-post-card`, `x-alert`, `x-page-header`.
+- Lien actif dans la navigation avec `request()->routeIs()`.
+- Articles toujours stockés dans un tableau PHP, sans base de données pour l'instant.
+
 
 ## Routes disponibles
 
@@ -79,6 +80,7 @@ http://localhost:8000
 | GET | `/posts/{slug}` | `posts.show` | `PostController@show` |
 
 ## Captures d'écran
+
 
 ### Accueil avec le layout
 
