@@ -11,9 +11,9 @@ class PageController extends Controller
 {
     return view('home', [
         'latestPosts' => Post::published()
-            ->latest('published_at')
-            ->take(3)
-            ->get(),
+    ->latest('published_at')
+    ->take(3)
+    ->get(),
     ]);
 }
 
