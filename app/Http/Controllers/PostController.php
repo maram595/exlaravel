@@ -45,23 +45,21 @@ public function store(Request $request): RedirectResponse
 {
     $validated = $request->validate([
         'title' => ['required', 'string', 'max:255'],
-        'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-]+$/', 'unique:posts,slug'],
-        'body' => ['required', 'string', 'min:20'],
+        'slug' => ['required', 'string', 'max:255'],
+        'body' => ['required', 'string'],
+        'excerpt' => ['nullable', 'string'],
         'is_published' => ['nullable', 'boolean'],
-        'excerpt' => ['nullable', 'string', 'max:255'],
         'category_id' => ['nullable', 'integer', 'exists:categories,id'],
         'tags' => ['nullable', 'array'],
-'tags.*' => ['integer', 'exists:tags,id']
+        'tags.*' => ['integer', 'exists:tags,id'],
     ]);
 
-    $validated['is_published'] = $request->boolean('is_published');
-    $validated['published_at'] = $validated['is_published'] ? now() : null;
+    $post = Post::create(Arr::except($validated, ['tags']));
 
-    $post = Post::create($validated);
+    $post->tags()->sync($validated['tags'] ?? []);
 
     return redirect()->route('posts.show', $post);
 }
-
 
 public function show(Post $post): View
 {
