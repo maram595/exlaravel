@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\View\View;
-
+use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
 class PageController extends Controller
 {
- public function home(): View
+public function home(): View
 {
     return view('home', [
         'latestPosts' => Post::published()
@@ -15,9 +16,14 @@ class PageController extends Controller
             ->latest('published_at')
             ->take(3)
             ->get(),
+
+        'categories' => Category::withCount([
+            'posts' => fn (Builder $query) => $query->published()
+        ])
+            ->orderBy('name')
+            ->get(),
     ]);
 }
-
     public function about(): View
     {
         return view('a-propos', [
