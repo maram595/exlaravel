@@ -9,4 +9,5 @@
         </x-alert>
     @endif
 
-<x-post-form :post="$post" :categories="$categories" /></x-layout>
+<x-post-form :post="$post" :categories="$categories" :tags="$tags" />
+</x-layout>

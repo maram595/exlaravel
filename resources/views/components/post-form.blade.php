@@ -1,5 +1,9 @@
-@props(['post' => null, 'categories'])
-
+@props(['post' => null, 'categories', 'tags'])
+@php
+    $selectedTags = session()->hasOldInput()
+        ? old('tags', [])
+        : ($post?->tags->pluck('id')->all() ?? []);
+@endphp
 <form method="POST"
     action="{{ $post ? route('posts.update', $post) : route('posts.store') }}"
     class="max-w-2xl space-y-5">
@@ -59,7 +63,34 @@
     <label for="category_id" class="block text-sm font-medium text-gray-700">
         Catégorie
     </label>
+<fieldset>
+    <legend class="block text-sm font-medium text-gray-700">
+        Tags
+    </legend>
 
+    <div class="mt-2 flex flex-wrap gap-4">
+        @foreach ($tags as $tag)
+            <label class="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                    type="checkbox"
+                    name="tags[]"
+                    value="{{ $tag->id }}"
+                    @checked(in_array($tag->id, $selectedTags))
+                >
+
+                {{ $tag->name }}
+            </label>
+        @endforeach
+    </div>
+
+    @error('tags')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
+
+    @error('tags.*')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</fieldset>
     <select
         id="category_id"
         name="category_id"

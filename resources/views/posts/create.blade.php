@@ -10,5 +10,5 @@
         </x-alert>
     @endif
 
-    <x-post-form :categories="$categories" />
+    <x-post-form :categories="$categories" :tags="$tags" />
 </x-layout>
