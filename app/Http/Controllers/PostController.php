@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-
+use App\Models\Category;
 class PostController extends Controller
 {
     public function index(): View
@@ -33,7 +33,9 @@ class PostController extends Controller
     
 public function create(): View
 {
-    return view('posts.create');
+    return view('posts.create', [
+        'categories' => Category::orderBy('name')->get(),
+    ]);
 }
 
 public function store(Request $request): RedirectResponse
@@ -43,7 +45,8 @@ public function store(Request $request): RedirectResponse
         'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-]+$/', 'unique:posts,slug'],
         'body' => ['required', 'string', 'min:20'],
         'is_published' => ['nullable', 'boolean'],
-        'excerpt' => ['nullable', 'string', 'max:255']
+        'excerpt' => ['nullable', 'string', 'max:255'],
+        'category_id' => ['nullable', 'integer', 'exists:categories,id']
     ]);
 
     $validated['is_published'] = $request->boolean('is_published');
@@ -62,9 +65,12 @@ public function show(Post $post): View
     return view('posts.show', compact('post'));
 }
 
- public function edit(Post $post): View
+public function edit(Post $post): View
 {
-    return view('posts.edit', compact('post'));
+    return view('posts.edit', [
+        'post' => $post,
+        'categories' => Category::orderBy('name')->get(),
+    ]);
 }
 public function update(Request $request, Post $post): RedirectResponse
 {
@@ -80,6 +86,7 @@ public function update(Request $request, Post $post): RedirectResponse
         'excerpt' => ['nullable', 'string', 'max:255'],
         'body' => ['required', 'string', 'min:20'],
         'is_published' => ['nullable', 'boolean'],
+        'category_id' => ['nullable', 'integer', 'exists:categories,id']
     ]);
 
     $validated['is_published'] = $request->boolean('is_published');
