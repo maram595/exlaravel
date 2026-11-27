@@ -14,4 +14,9 @@ Route::get('/posts/archive/{year}', [PostController::class, 'archive'])
     ->name('posts.archive');
 Route::get('/posts/categorie/{category:slug}', [PostController::class, 'byCategory'])
     ->name('posts.category');
-Route::resource('posts', PostController::class);
+Route::middleware('writable')->group(function () {
+    Route::resource('posts', PostController::class);
+
+    Route::patch('/posts/{post}/publication', [PostController::class, 'togglePublication'])
+        ->name('posts.publication');
+});
