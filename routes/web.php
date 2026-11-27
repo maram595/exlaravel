@@ -4,7 +4,7 @@
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\CategoryController;
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/a-propos', [PageController::class, 'about'])->name('about');
 Route::get('/heure', [PageController::class, 'time'])->name('time');
@@ -16,7 +16,9 @@ Route::get('/posts/categorie/{category:slug}', [PostController::class, 'byCatego
     ->name('posts.category');
 Route::middleware('writable')->group(function () {
     Route::resource('posts', PostController::class);
-
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('categories', CategoryController::class)->except('show');
+});
     Route::patch('/posts/{post}/publication', [PostController::class, 'togglePublication'])
         ->name('posts.publication');
 });
