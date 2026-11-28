@@ -2,64 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTagRequest;
+use App\Http\Requests\UpdateTagRequest;
 use App\Models\Tag;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        Gate::authorize('manage-tags');
+
+        $tags = Tag::orderBy('name')->get();
+
+        return view('admin.tags.index', compact('tags'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        Gate::authorize('manage-tags');
+
+        return view('admin.tags.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreTagRequest $request)
     {
-        //
+        Gate::authorize('manage-tags');
+
+        Tag::create($request->validated());
+
+        return redirect()
+            ->route('admin.tags.index')
+            ->with('success', 'Tag créé.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Tag $tag)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Tag $tag)
     {
-        //
+        Gate::authorize('manage-tags');
+
+        return view('admin.tags.edit', compact('tag'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Tag $tag)
+    public function update(UpdateTagRequest $request, Tag $tag)
     {
-        //
+        Gate::authorize('manage-tags');
+
+        $tag->update($request->validated());
+
+        return redirect()
+            ->route('admin.tags.index')
+            ->with('success', 'Tag mis à jour.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Tag $tag)
     {
-        //
+        Gate::authorize('manage-tags');
+
+        $tag->posts()->detach();
+        $tag->delete();
+
+        return redirect()
+            ->route('admin.tags.index')
+            ->with('success', 'Tag supprimé.');
     }
 }

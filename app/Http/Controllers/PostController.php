@@ -10,19 +10,22 @@ use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 class PostController extends Controller
 {
-    public function index(): View
-    {
-        return view('posts.index', [
-            'heading' => 'Tous les articles',
-            'posts' => Post::with('user', 'category', 'tags')
-                ->latest('id')
-                ->paginate(4),
-        ]);
-    }
+public function index(Request $request): View
+{
+    $posts = Post::visibleTo($request->user())
+        ->with('user', 'category', 'tags')
+        ->latest('id')
+        ->paginate(4);
 
+    return view('posts.index', [
+    'posts' => $posts,
+    'heading' => 'Tous les articles',
+]);
+}
     public function archive(string $year): View
     {
         return view('posts.index', [
@@ -37,6 +40,7 @@ class PostController extends Controller
 
     public function create(): View
     {
+        Gate::authorize('create', Post::class);
         return view('posts.create', [
             'categories' => Category::orderBy('name')->get(),
             'tags' => Tag::orderBy('name')->get(),
@@ -65,6 +69,7 @@ class PostController extends Controller
 }
     public function show(Post $post): View
     {
+        Gate::authorize('view', $post);
         $post->load('user', 'category', 'tags');
 
         return view('posts.show', compact('post'));

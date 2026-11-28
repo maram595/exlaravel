@@ -20,6 +20,10 @@ public function boot(): void
 
     Gate::define('manage-categories', function (User $user) {
         return $user->role === 'admin';
+        
     });
+    Gate::define('manage-tags', function (User $user) {
+    return $user->role === 'admin';
+});
 }
 }

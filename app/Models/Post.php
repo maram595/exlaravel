@@ -32,6 +32,20 @@ protected $fillable = [
     {
         $query->where('is_published', true);
     }
+    public function scopeVisibleTo(Builder $query, ?User $user): void
+{
+    if ($user?->isAdmin()) {
+        return;
+    }
+
+    $query->where(function (Builder $query) use ($user) {
+        $query->published();
+
+        if ($user !== null) {
+            $query->orWhere('user_id', $user->id);
+        }
+    });
+}
     public function user(): BelongsTo
 {
     return $this->belongsTo(User::class);

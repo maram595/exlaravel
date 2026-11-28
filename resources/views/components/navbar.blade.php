@@ -25,7 +25,9 @@
                     Catégories
                 </a>
             @endcan
-
+@can('manage-tags')
+    <a href="{{ route('admin.tags.index') }}">Tags</a>
+@endcan
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit">

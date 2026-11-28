@@ -207,3 +207,19 @@ Groupe : MDW32
 Licence
 
 Projet pédagogique réalisé dans le cadre de l'Atelier Framework Côté Serveur.
+## Comparaison avec le starter kit Livewire
+
+| Fonctionnalité | Mini-CMS | Starter Kit Livewire |
+|---|---|---|
+| Inscription | RegisterController | Fortify et CreateNewUser |
+| Connexion | LoginController | Fortify |
+| Déconnexion | LoginController | Action Logout Livewire |
+| Protection des routes | Middleware et authentification | Middleware Laravel |
+| Limitation des tentatives | Non implémentée | 5 tentatives par minute |
+| Mot de passe oublié | Non implémenté | Disponible avec resetPasswords |
+| Vérification email | Non implémentée | Disponible avec emailVerification |
+| Double authentification | Non implémentée | Disponible avec twoFactorAuthentication |
+| Gestion des rôles | Rôle admin, Gates et Policies | À développer |
+| Tests | Tests Pest personnalisés | Tests fournis avec le starter kit |
+
+Le starter kit Livewire fournit une base d'authentification plus complète et plusieurs fonctionnalités de sécurité prêtes à l'emploi. Le Mini-CMS utilise une implémentation personnalisée, ce qui permet de mieux comprendre les contrôleurs, les middlewares, les Gates et les Policies.
