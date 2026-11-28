@@ -1,8 +1,10 @@
+
 <?php
 
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 
 beforeEach(function () {
     $this->withoutVite();
@@ -11,7 +13,7 @@ beforeEach(function () {
 function taxonomyPostData(array $overrides = []): array
 {
     return array_merge([
-        'title' => 'Article classé',
+        'title' => 'Article classe',
         'slug' => 'article-classe',
         'body' => 'Contenu assez long pour passer la validation.',
         'is_published' => '1',
@@ -19,6 +21,9 @@ function taxonomyPostData(array $overrides = []): array
 }
 
 it('stores the category and the tags chosen in the form', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
     $category = Category::factory()->create();
     $tags = Tag::factory(2)->create();
 
@@ -30,11 +35,17 @@ it('stores the category and the tags chosen in the form', function () {
     $post = Post::where('slug', 'article-classe')->firstOrFail();
 
     expect($post->category_id)->toBe($category->id);
+    expect($post->user_id)->toBe($user->id);
     expect($post->tags()->count())->toBe(2);
 });
 
 it('replaces the tags on update with sync', function () {
-    $post = Post::factory()->create(['slug' => 'article-classe']);
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $post = Post::factory()->for($user)->create([
+        'slug' => 'article-classe',
+    ]);
 
     [$old, $kept, $new] = Tag::factory(3)->create()->all();
 
@@ -64,7 +75,12 @@ it('replaces the tags on update with sync', function () {
 });
 
 it('removes every tag when no box is checked', function () {
-    $post = Post::factory()->create(['slug' => 'article-classe']);
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $post = Post::factory()->for($user)->create([
+        'slug' => 'article-classe',
+    ]);
 
     $post->tags()->attach(Tag::factory(2)->create());
 
@@ -73,16 +89,18 @@ it('removes every tag when no box is checked', function () {
         taxonomyPostData()
     )->assertRedirect(route('posts.show', $post));
 
-    expect($post->tags()->count())->toBe(0);
+    expect($post->fresh()->tags()->count())->toBe(0);
 });
 
 it('refuses a category that does not exist', function () {
+    $this->actingAs(User::factory()->create());
+
     $this->post(
         route('posts.store'),
         taxonomyPostData([
             'category_id' => 999,
         ])
-    )->assertRedirect();
+    )->assertSessionHasErrors('category_id');
 
     $this->assertDatabaseMissing('posts', [
         'slug' => 'article-classe',

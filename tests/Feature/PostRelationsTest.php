@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Models\Category;
@@ -30,7 +31,9 @@ it('lists posts with their category, author and tags without lazy loading', func
 
 it('keeps the posts when their category is deleted', function () {
     $category = Category::factory()->create();
-    $post = Post::factory()->create(['category_id' => $category->id]);
+    $post = Post::factory()->create([
+        'category_id' => $category->id,
+    ]);
 
     $category->delete();
 
@@ -46,23 +49,35 @@ it('replaces the tags of a post with sync', function () {
     $post->tags()->sync([$tags[1]->id, $tags[2]->id]);
 
     expect($post->tags()->count())->toBe(2);
+
     $this->assertDatabaseMissing('post_tag', [
         'post_id' => $post->id,
-        'tag_id' => $tags[0]->id
+        'tag_id' => $tags[0]->id,
     ]);
+
     $this->assertDatabaseHas('post_tag', [
         'post_id' => $post->id,
-        'tag_id' => $tags[2]->id
+        'tag_id' => $tags[2]->id,
     ]);
 });
 
 it('removes the pivot rows when a post is deleted', function () {
-    $post = Post::factory()->create();
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $post = Post::factory()->for($user)->create();
     $tag = Tag::factory()->create();
+
     $post->tags()->attach($tag);
 
-    $this->delete(route('posts.destroy', $post));
+    $this->delete(route('posts.destroy', $post))
+        ->assertRedirect(route('posts.index'));
 
-    $this->assertDatabaseMissing('post_tag', ['post_id' => $post->id]);
-    $this->assertDatabaseHas('tags', ['id' => $tag->id]);
+    $this->assertDatabaseMissing('post_tag', [
+        'post_id' => $post->id,
+    ]);
+
+    $this->assertDatabaseHas('tags', [
+        'id' => $tag->id,
+    ]);
 });

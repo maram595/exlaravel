@@ -2,64 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        Gate::authorize('manage-categories');
+        $categories = Category::orderBy('name')->get();
+
+        return view('admin.categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        Gate::authorize('manage-categories');
+        return view('admin.categories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        //
+        Gate::authorize('manage-categories');
+        Category::create($request->validated());
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Catégorie créée.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Category $category)
     {
-        //
+        Gate::authorize('manage-categories');
+        return view('admin.categories.edit', compact('category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        Gate::authorize('manage-categories');
+        $category->update($request->validated());
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Catégorie mise à jour.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Category $category)
     {
-        //
+        Gate::authorize('manage-categories');
+        DB::table('posts')
+            ->where('category_id', $category->id)
+            ->update(['category_id' => null]);
+
+        $category->delete();
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Catégorie supprimée.');
     }
 }

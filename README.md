@@ -1,104 +1,209 @@
-# Mini-CMS — Atelier Framework Côté Serveur
+Validation des données avec les Form Requests.
 
-Projet fil rouge réalisé avec **Laravel 13** dans le cadre de l’Atelier Framework Côté Serveur.
+Pages d'erreur personnalisées.
 
-## Présentation
+Technologies utilisées
 
-Mini-CMS est une application web développée avec Laravel. Ce projet permet de découvrir les bases du développement côté serveur avec PHP et le framework Laravel.
+PHP 8.3
 
-## Technologies utilisées
+Laravel 13
 
-- PHP 8.3
-- Laravel 13
-- Composer
-- Node.js et npm
-- Blade
-- Tailwind CSS
-- Vite
-- Git et GitHub
+Composer
 
-## Prérequis
+SQLite
 
-- PHP 8.3 ou version compatible
-- Composer
-- Node.js et npm
-- Git
+Node.js et npm
 
-## Installation
+Blade
 
-### Bash (Linux / macOS)
+Tailwind CSS
 
-```bash
+Vite
+
+Git et GitHub
+
+Prérequis
+
+PHP 8.3 ou une version compatible
+
+Composer
+
+Node.js et npm
+
+Git
+
+Installation
+
+Bash (Linux / macOS)
+
 git clone https://github.com/maram595/exlaravel.git
 cd exlaravel
 composer install
 cp .env.example .env
 php artisan key:generate
 npm install
-```
 
-### PowerShell (Windows)
+PowerShell (Windows)
 
-```powershell
 git clone https://github.com/maram595/exlaravel.git
 cd exlaravel
 composer install
 Copy-Item .env.example .env
 php artisan key:generate
 npm install
-```
 
-## Lancer le projet
+Configuration de la base de données
 
-Pour démarrer l'application et les outils de développement :
+Le projet utilise SQLite.
 
-```bash
+Vérifier que la configuration du fichier .env correspond à la base de données utilisée.
+
+Si le fichier SQLite n'existe pas encore, le créer :
+
+New-Item database/database.sqlite -ItemType File
+
+Puis exécuter les migrations et les seeders :
+
+php artisan migrate --seed
+
+Lancer le projet
+
+Pour démarrer le serveur Laravel et les outils de développement :
+
 composer run dev
-```
 
-Ouvrir ensuite l'application à l'adresse suivante :
+Ouvrir ensuite l'application à l'adresse :
 
 http://localhost:8000
 
+Authentification et rôles
 
-## État actuel (tag lab-02b)
+L'application possède deux rôles :
 
-- Pages construites avec des composants Blade anonymes : `x-navbar`, `x-nav-link`, `x-post-card`, `x-alert`, `x-page-header`.
-- Lien actif dans la navigation avec `request()->routeIs()`.
-- Articles toujours stockés dans un tableau PHP, sans base de données pour l'instant.
+admin : peut gérer les catégories et les tags et administrer les articles.
 
+author : peut gérer ses propres articles selon les autorisations définies.
 
-## Routes disponibles
+Les accès sont protégés par les middlewares, les Gates et les Policies.
 
-| Méthode | URI | Nom | Action |
-|---|---|---|---|
-| GET | `/` | `home` | `PageController@home` |
-| GET | `/a-propos` | `about` | `PageController@about` |
-| GET | `/heure` | `time` | `PageController@time` |
-| GET | `/posts` | `posts.index` | `PostController@index` |
-| GET | `/posts/archive/{year}` | `posts.archive` | `PostController@archive` |
-| GET | `/posts/{slug}` | `posts.show` | `PostController@show` |
+Routes principales
 
-## Captures d'écran
+Méthode
 
+URI
 
-### Accueil avec le layout
+Fonction
 
-![Page d'accueil avec le layout](screenshots/s03-accueil.png)
+GET
 
-### Liste des articles
+/
 
-![Liste des articles](screenshots/s03-articles.png)
+Page d'accueil
 
-### Détail d'un article
+GET
 
-![Détail d'un article](screenshots/s03-article.png)
+/a-propos
 
-## Auteur
+Page à propos
 
-- **Nom :** Slama Maram
-- **Groupe :** MDW32
+GET
 
-## Licence
+/heure
 
-Projet pédagogique réalisé dans le cadre de l’Atelier Framework Côté Serveur.
+Affichage de l'heure
+
+GET
+
+/posts
+
+Liste des articles
+
+GET
+
+/posts/create
+
+Formulaire de création
+
+GET
+
+/posts/{post}
+
+Détail d'un article
+
+GET
+
+/connexion
+
+Formulaire de connexion
+
+POST
+
+/connexion
+
+Traitement de la connexion
+
+GET
+
+/inscription
+
+Formulaire d'inscription
+
+POST
+
+/inscription
+
+Traitement de l'inscription
+
+POST
+
+/deconnexion
+
+Déconnexion
+
+GET
+
+/admin/categories
+
+Gestion des catégories
+
+GET
+
+/admin/tags
+
+Gestion des tags
+
+Pour afficher toutes les routes :
+
+php artisan route:list
+
+Tests
+
+Pour exécuter les tests automatisés :
+
+php artisan test
+
+Captures d'écran
+
+Les captures d'écran du projet sont disponibles dans le dossier screenshots/.
+
+Exemples :
+
+s03-accueil.png : page d'accueil.
+
+s03-articles.png : liste des articles.
+
+s03-article.png : détail d'un article.
+
+s10-404.png : page d'erreur 404.
+
+s10-validation.png : validation des formulaires.
+
+Auteur
+
+Nom : Slama Maram
+
+Groupe : MDW32
+
+Licence
+
+Projet pédagogique réalisé dans le cadre de l'Atelier Framework Côté Serveur.

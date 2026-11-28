@@ -19,4 +19,10 @@ class StoreCategoryRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', 'unique:categories,slug'],
         ];
     }
+    public function messages(): array
+{
+    return [
+        'slug.unique' => 'Ce slug est déjà utilisé par une autre catégorie.',
+    ];
+}
 }

@@ -44,20 +44,25 @@ class PostController extends Controller
     }
 
     public function store(StorePostRequest $request): RedirectResponse
-    {
-        $validated = $request->validated();
+{
+    $validated = $request->validated();
 
-        $validated['is_published'] = $request->boolean('is_published');
-        $validated['published_at'] = $validated['is_published'] ? now() : null;
+    $validated['is_published'] = $request->boolean('is_published');
+    $validated['published_at'] = $validated['is_published'] ? now() : null;
 
-        $post = Post::create(Arr::except($validated, ['tags']));
-        $post->tags()->sync($validated['tags'] ?? []);
+    // CrÃ©er l'article pour l'utilisateur connectÃ©
+    $post = $request->user()->posts()->create(
+        Arr::except($validated, ['tags'])
 
-return redirect()
-    ->route('posts.show', $post)
-    ->with('success', 'Article créé.');
-    }
+    );
 
+    // Associer les tags
+    $post->tags()->sync($validated['tags'] ?? []);
+
+    return redirect()
+        ->route('posts.show', $post)
+        ->with('success', 'Article crÃ©Ã©.');
+}
     public function show(Post $post): View
     {
         $post->load('user', 'category', 'tags');
@@ -67,6 +72,7 @@ return redirect()
 
     public function edit(Post $post): View
     {
+        $this->authorize('update', $post);
         $post->load('tags');
 
         return view('posts.edit', [
@@ -78,6 +84,7 @@ return redirect()
 
     public function update(UpdatePostRequest $request, Post $post): RedirectResponse
     {
+        $this->authorize('update', $post);
         $validated = $request->validated();
 
         $validated['is_published'] = $request->boolean('is_published');
@@ -90,22 +97,25 @@ return redirect()
 
         return redirect()
     ->route('posts.show', $post)
-    ->with('success', 'Article modifié.');
+    ->with('success', 'Article modifiÃ©.');
     }
 
-    public function destroy(Post $post): RedirectResponse
-    {
-        $post->delete();
+public function destroy(Post $post): RedirectResponse
+{
+    $this->authorize('delete', $post);
 
-return redirect()
-    ->route('posts.index')
-    ->with('success', 'Article supprimé.');
-    }
+    $post->tags()->detach();
+    $post->delete();
+
+    return redirect()
+        ->route('posts.index')
+        ->with('success', 'Article supprimÃ©.');
+}
 
     public function byCategory(Category $category): View
     {
         return view('posts.index', [
-            'heading' => 'Catégorie : '.$category->name,
+            'heading' => 'CatÃ©gorie : '.$category->name,
             'posts' => $category->posts()
                 ->published()
                 ->with('user', 'category', 'tags')
@@ -115,6 +125,7 @@ return redirect()
     }
     public function togglePublication(Post $post): RedirectResponse
 {
+    $this->authorize('update', $post);
     $isPublished = ! $post->is_published;
 
     $post->update([
@@ -124,6 +135,6 @@ return redirect()
 
     return redirect()
         ->route('posts.show', $post)
-        ->with('success', $isPublished ? 'Article publié.' : 'Article dépublié.');
+        ->with('success', $isPublished ? 'Article publiÃ©.' : 'Article dÃ©publiÃ©.');
 }
 }
