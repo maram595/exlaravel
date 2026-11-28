@@ -25,7 +25,10 @@ protected function casts(): array
         'password' => 'hashed',
     ];
 }
-
+public function isAdmin(): bool
+{
+    return $this->role === 'admin';
+}
 
     public function posts(): HasMany
     {

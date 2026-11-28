@@ -51,7 +51,7 @@ Route::middleware(['auth', 'writable'])->group(function () {
         ->name('posts.publication');
 
     // Administration des catégories et des tags
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('categories', CategoryController::class)->except('show');
         Route::resource('tags', TagController::class)->except('show');
     });
